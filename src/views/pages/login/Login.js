@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   CButton,
@@ -15,8 +15,33 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
+import AuthAxios from '../../../intreceptor/authAxios'
+import Logo from '../../../assets/images/logo1.jpg'
 
 const Login = () => {
+  const [value, setValue] = useState({
+    email: '',
+    pass: '',
+  })
+
+  let first_page = () => {
+    AuthAxios.post('admin-login', {
+      email: value.email,
+      password: value.pass,
+    })
+      .then((res) => {
+        if (res.data.message === 'Login Successfully') {
+          localStorage.setItem('token', res.data.access_token)
+          window.location.href = '/#/dashboard'
+        } else {
+          alert('Invalid credentials')
+        }
+      })
+      .catch((err) => {
+        console.error(err.message)
+        alert(err.message)
+      })
+  }
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
@@ -32,7 +57,13 @@ const Login = () => {
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput placeholder="Username" autoComplete="username" />
+                      <CFormInput
+                        placeholder="Email"
+                        autoComplete="email"
+                        type="email"
+                        value={value.email}
+                        onChange={(e) => setValue((prev) => ({ ...prev, email: e.target.value }))}
+                      />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
@@ -42,36 +73,27 @@ const Login = () => {
                         type="password"
                         placeholder="Password"
                         autoComplete="current-password"
+                        value={value.pass}
+                        onChange={(e) => setValue((prev) => ({ ...prev, pass: e.target.value }))}
                       />
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="primary" className="px-4">
+                        <CButton color="primary" className="px-4" onClick={first_page}>
                           Login
-                        </CButton>
-                      </CCol>
-                      <CCol xs={6} className="text-right">
-                        <CButton color="link" className="px-0">
-                          Forgot password?
                         </CButton>
                       </CCol>
                     </CRow>
                   </CForm>
                 </CCardBody>
               </CCard>
-              <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
-                <CCardBody className="text-center">
+              <CCard className="text-white py-5" style={{ width: '44%' }}>
+                <CCardBody
+                  className="text-center"
+                  style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                >
                   <div>
-                    <h2>Sign up</h2>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                      tempor incididunt ut labore et dolore magna aliqua.
-                    </p>
-                    <Link to="/register">
-                      <CButton color="primary" className="mt-3" active tabIndex={-1}>
-                        Register Now!
-                      </CButton>
-                    </Link>
+                    <img src={Logo} alt="logo" style={{ width: 200 }} />
                   </div>
                 </CCardBody>
               </CCard>

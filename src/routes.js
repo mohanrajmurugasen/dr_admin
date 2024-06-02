@@ -1,4 +1,8 @@
 import React from 'react'
+import EmployeList from './views/pages/employees/employeList'
+import CreateEmployee from './views/pages/employees/createEmployee'
+import LeadsList from './views/pages/leads/leadsList'
+import RemindersList from './views/pages/reminders/remindersList'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -92,6 +96,10 @@ const routes = [
   { path: '/notifications/modals', name: 'Modals', element: Modals },
   { path: '/notifications/toasts', name: 'Toasts', element: Toasts },
   { path: '/widgets', name: 'Widgets', element: Widgets },
+  { path: '/leadList', name: 'Lead List', element: LeadsList },
+  { path: '/employeeList', name: 'Employee List', element: EmployeList },
+  { path: '/createEmployee', name: 'Employee Create', element: CreateEmployee },
+  { path: '/remindersList', name: 'Reminders List', element: RemindersList },
 ]
 
 export default routes

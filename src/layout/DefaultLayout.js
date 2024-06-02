@@ -1,7 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { AppContent, AppSidebar, AppFooter, AppHeader } from '../components/index'
 
 const DefaultLayout = () => {
+  const token = localStorage.getItem('token')
+  useEffect(() => {
+    if (!token) {
+      window.location.href = '/#/login'
+    }
+  }, [])
   return (
     <div>
       <AppSidebar />

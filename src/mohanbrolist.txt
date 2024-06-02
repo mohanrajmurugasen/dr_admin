@@ -1,0 +1,21 @@
+1. Interested, not interested, reminder, walk in
+
+2.employee, customer_status
+
+3.https://github.com/mohanrajmurugasen/dr_admin.git
+
+
+4."customer_name": "karthi",
+            "email": "akarthi@gmail.comr",
+            "mobile_number": "9876543335",
+            "age": 35,
+            "face_shape": "oval",
+            "temple_correction": null,
+            "hair_loss_stage": "medium",
+            "status": 1,
+            "lead_id": null,
+            "is_remainder": null,
+delete button
+
+
+employee remove pass
