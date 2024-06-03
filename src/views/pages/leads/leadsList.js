@@ -46,8 +46,7 @@ export default function LeadsList() {
     'Mobile',
     'Age',
     'Face Shape',
-    'Temple Correction',
-    'hHair Loss Stage',
+    'Hair Loss Stage',
     'Status',
     'Employee',
     'Reminder Date',
@@ -184,10 +183,6 @@ export default function LeadsList() {
                 <td style={{ border: 'none' }} key={index}>
                   {' '}
                   {v.face_shape}
-                </td>
-                <td style={{ border: 'none' }} key={index}>
-                  {' '}
-                  {v.temple_correction}
                 </td>
                 <td style={{ border: 'none' }}>{v.hair_loss_stage}</td>
                 <td style={{ border: 'none' }}>
