@@ -104,7 +104,15 @@ export default function LeadsList() {
           alert('Internal Server Error!')
         })
     } else {
-      AuthAxios.post(`enquiry/change-status`, value)
+      const data =
+        value.status === '4'
+          ? value
+          : {
+              id: value.id,
+              status: value.status,
+              lead_id: value.lead_id,
+            }
+      AuthAxios.post(`enquiry/change-status`, data)
         .then((res) => {
           if (res.data?.message === 'Enquiry Details Updated successfully') {
             setDelData(!del_data)
@@ -145,7 +153,6 @@ export default function LeadsList() {
     }
   }
 
-  console.log(value)
   return (
     <div>
       <Table responsive>
@@ -187,12 +194,14 @@ export default function LeadsList() {
                 <td style={{ border: 'none' }}>{v.hair_loss_stage}</td>
                 <td style={{ border: 'none' }}>
                   {v.status === 1
-                    ? 'Accepted'
+                    ? 'Open'
                     : v.status === 2
-                      ? 'Reject'
+                      ? 'Interested'
                       : v.status === 3
-                        ? 'Reminder'
-                        : ''}
+                        ? 'Not interested'
+                        : v.status === 4
+                          ? 'Remainder'
+                          : ''}
                 </td>
                 <td style={{ border: 'none' }}>{employeDetails(v.lead_id)}</td>
                 <td style={{ border: 'none' }}>{v.remainder_date}</td>
@@ -293,14 +302,15 @@ export default function LeadsList() {
                         aria-label="Default select example"
                         options={[
                           'Select Status',
-                          { label: 'Accepted', value: '1' },
-                          { label: 'Rejected', value: '2' },
-                          { label: 'Reminder', value: '3' },
+                          { label: 'Open', value: '1' },
+                          { label: 'Interested', value: '2' },
+                          { label: 'Not interested', value: '3' },
+                          { label: 'Remainder', value: '4' },
                         ]}
                         onChange={(e) => setValue((pre) => ({ ...pre, status: e.target.value }))}
                       />
                     </CInputGroup>
-                    {value.status === '3' && (
+                    {value.status === '4' && (
                       <CInputGroup className="mb-3" style={{ width: '100%' }}>
                         <div style={{ width: '100%' }}>
                           <div style={{ marginBottom: 5 }}>

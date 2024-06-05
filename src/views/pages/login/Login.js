@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   CButton,
@@ -24,6 +24,13 @@ const Login = () => {
     pass: '',
   })
 
+  const token = sessionStorage.getItem('token')
+  useEffect(() => {
+    if (token) {
+      window.location.href = '/#/dashboard'
+    }
+  }, [])
+
   let first_page = () => {
     AuthAxios.post('admin-login', {
       email: value.email,
@@ -31,7 +38,7 @@ const Login = () => {
     })
       .then((res) => {
         if (res.data.message === 'Login Successfully') {
-          localStorage.setItem('token', res.data.access_token)
+          sessionStorage.setItem('token', res.data.access_token)
           window.location.href = '/#/dashboard'
         } else {
           alert('Invalid credentials')

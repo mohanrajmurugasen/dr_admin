@@ -88,7 +88,7 @@ const AppHeaderDropdown = () => {
         <CDropdownDivider />
         <CDropdownItem
           onClick={() => {
-            localStorage.removeItem('token')
+            sessionStorage.removeItem('token')
             window.location.href = '/#/login'
           }}
           style={{ cursor: 'pointer' }}

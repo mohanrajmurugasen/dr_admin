@@ -9,6 +9,7 @@ import {
   CCol,
   CForm,
   CFormInput,
+  CFormSelect,
   CInputGroup,
   CInputGroupText,
   CModal,
@@ -18,8 +19,8 @@ import {
   CModalTitle,
   CRow,
 } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilPhone, cilUser } from '@coreui/icons'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
 
 const RemindersList = () => {
@@ -29,33 +30,46 @@ const RemindersList = () => {
   const [delId, setdelId] = useState(null)
   const [visible, setVisible] = useState(false)
   const [type, settype] = useState('edit')
+  const [allEmployees, setAllEmployees] = useState([])
   const [value, setValue] = useState({
-    name: '',
-    email: '',
-    mobile_number: '',
-    username: '',
-    id: '',
+    lead_id: 0,
+    remainder_date: moment(new Date()).format('YYYY-MM-DD'),
   })
 
-  let Lead_Heading = ['Name', 'Email', 'Mobile', 'UserName']
-
   useEffect(() => {
-    AuthAxios.post('enquiry/remainder-list', {
-      lead_id: 1,
-      remainder_date: moment(new Date()).format('YYYY-MM-DD'),
-    })
+    AuthAxios.get('leads')
       .then((res) => {
         if (res.data?.data) {
-          setData(res.data.data)
-        } else {
-          alert('Internal Server Error!')
+          setAllEmployees(res.data?.data)
         }
       })
       .catch((err) => {
         console.error(err.message)
         alert('Internal Server Error!')
       })
-  }, [del_data])
+  }, [])
+
+  let Lead_Heading = ['Name', 'Email', 'Mobile', 'Age', 'Face Shape', 'Hair Loss Stage']
+
+  useEffect(() => {
+    if (value.lead_id !== 0) {
+      AuthAxios.post('enquiry/remainder-list', {
+        lead_id: Number(value.lead_id),
+        remainder_date: value.remainder_date,
+      })
+        .then((res) => {
+          if (res.data?.data) {
+            setData(res.data.data)
+          } else {
+            alert('Internal Server Error!')
+          }
+        })
+        .catch((err) => {
+          console.error(err.message)
+          alert('Internal Server Error!')
+        })
+    }
+  }, [value])
 
   let del = (v) => {
     if (type === 'edit') {
@@ -102,8 +116,38 @@ const RemindersList = () => {
     }
   }
 
+  const convertDate = (dateString) => {
+    const date = moment(dateString, 'ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (zz)')
+
+    return date.format('YYYY-MM-DD')
+  }
+
   return (
     <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div>
+          <DatePicker
+            selected={value.remainder_date}
+            onChange={(date) => {
+              setValue((pre) => ({ ...pre, remainder_date: convertDate(date) }))
+            }}
+          />
+        </div>
+        <div>
+          <CFormSelect
+            aria-label="Default select example"
+            onChange={(e) => setValue((pre) => ({ ...pre, lead_id: e.target.value }))}
+          >
+            <option>Select Employee</option>
+            {allEmployees.map((itm) => (
+              <option key={itm.id} value={itm.id}>
+                {itm.name}
+              </option>
+            ))}
+          </CFormSelect>
+        </div>
+      </div>
+      <br />
       <Table responsive>
         <thead>
           <tr>
@@ -120,22 +164,12 @@ const RemindersList = () => {
           {records &&
             records?.map((v, index) => (
               <tr key={index} style={{ border: 'none' }}>
-                <td style={{ border: 'none' }} key={index}>
-                  {' '}
-                  {v.name}
-                </td>
-                <td style={{ border: 'none' }} key={index}>
-                  {' '}
-                  {v.email}
-                </td>
-                <td style={{ border: 'none' }} key={index}>
-                  {' '}
-                  {v.mobile_number}
-                </td>
-                <td style={{ border: 'none' }} key={index}>
-                  {' '}
-                  {v.username}
-                </td>
+                <td style={{ border: 'none' }}> {v.customer_name}</td>
+                <td style={{ border: 'none' }}> {v.email}</td>
+                <td style={{ border: 'none' }}> {v.mobile_number}</td>
+                <td style={{ border: 'none' }}> {v.age}</td>
+                <td style={{ border: 'none' }}> {v.face_shape}</td>
+                <td style={{ border: 'none' }}> {v.hair_loss_stage}</td>
               </tr>
             ))}
         </tbody>
@@ -173,92 +207,6 @@ const RemindersList = () => {
           </li>
         </ul>
       </nav>
-
-      <CModal
-        visible={visible}
-        onClose={() => setVisible(false)}
-        aria-labelledby="LiveDemoExampleLabel"
-      >
-        <CModalHeader>
-          <CModalTitle id="LiveDemoExampleLabel">
-            {type === 'edit' ? 'Edit' : 'Delete'} Employee
-          </CModalTitle>
-        </CModalHeader>
-        {type === 'edit' ? (
-          <CModalBody>
-            <CRow className="justify-content-center">
-              <CCol md={12} lg={12} xl={12}>
-                <CCard className="mx-4">
-                  <CCardBody className="p-4">
-                    <CForm>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText>
-                          <CIcon icon={cilUser} />
-                        </CInputGroupText>
-                        <CFormInput
-                          placeholder="Name"
-                          autoComplete="name"
-                          value={value.name}
-                          onChange={(e) => setValue((pre) => ({ ...pre, name: e.target.value }))}
-                        />
-                      </CInputGroup>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText>
-                          <CIcon icon={cilUser} />
-                        </CInputGroupText>
-                        <CFormInput
-                          placeholder="Username"
-                          autoComplete="username"
-                          value={value.username}
-                          onChange={(e) =>
-                            setValue((pre) => ({ ...pre, username: e.target.value }))
-                          }
-                        />
-                      </CInputGroup>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText>@</CInputGroupText>
-                        <CFormInput
-                          placeholder="Email"
-                          autoComplete="email"
-                          value={value.email}
-                          onChange={(e) => setValue((pre) => ({ ...pre, email: e.target.value }))}
-                        />
-                      </CInputGroup>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText>
-                          <CIcon icon={cilPhone} />
-                        </CInputGroupText>
-                        <CFormInput
-                          placeholder="Mobile No."
-                          autoComplete="phone"
-                          value={value.mobile_number}
-                          onChange={(e) =>
-                            setValue((pre) => ({ ...pre, mobile_number: e.target.value }))
-                          }
-                        />
-                      </CInputGroup>
-                    </CForm>
-                  </CCardBody>
-                </CCard>
-              </CCol>
-            </CRow>
-          </CModalBody>
-        ) : (
-          <CModalBody>
-            <p>Are you sure you want to delete employee?</p>
-          </CModalBody>
-        )}
-        <CModalFooter>
-          {type !== 'edit' && (
-            <CButton color="secondary" onClick={() => setVisible(false)}>
-              No
-            </CButton>
-          )}
-          <CButton color="primary" onClick={() => del(delId)}>
-            {type === 'edit' ? 'Update' : 'Yes'}
-          </CButton>
-        </CModalFooter>
-      </CModal>
     </div>
   )
 }
