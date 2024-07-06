@@ -86,6 +86,7 @@ export default function LeadsList() {
   useEffect(() => {
     AuthAxios.get('enquiry')
       .then((res) => {
+        console.log(res.data)
         if (res.data?.data) {
           setLeade(res.data.data)
         } else {
@@ -142,7 +143,9 @@ export default function LeadsList() {
     return remainderDate >= fromDate && remainderDate <= toDate
   })
 
-  const getDatas = filtervisible ? filtered : Leads
+  const sortedLeads = Leads.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+
+  const getDatas = filtervisible ? filtered : sortedLeads
 
   const [itemOffset, setItemOffset] = useState(0)
 
