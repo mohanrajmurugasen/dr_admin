@@ -20,6 +20,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilPhone, cilUser } from '@coreui/icons'
+import ReactPaginate from 'react-paginate'
 
 const EmployeList = () => {
   const [data, setData] = useState([])
@@ -72,30 +73,15 @@ const EmployeList = () => {
     }
   }
 
-  const [currentPage, setCurrentPage] = useState(1)
+  const [itemOffset, setItemOffset] = useState(0)
 
-  const recordsPerPage = 3
-  const lastIndex = currentPage * recordsPerPage
+  const endOffset = itemOffset + 15
+  const currentItems = data.slice(itemOffset, endOffset)
+  const pageCount = Math.ceil(data.length / 15)
 
-  const firstIndex = lastIndex - recordsPerPage
-  const records = data?.slice(firstIndex, lastIndex)
-  const npage = Math.ceil(data?.length / recordsPerPage)
-  const numbers = [...Array(npage + 1).keys()].slice(1)
-  function prepage() {
-    if (currentPage !== firstIndex) {
-      setCurrentPage(currentPage - 1)
-      console.log('hi', currentPage)
-    }
-  }
-  function changeCPage(id) {
-    setCurrentPage(id)
-  }
-
-  function nextpage() {
-    if (currentPage !== firstIndex) {
-      setCurrentPage(currentPage + 1)
-      setDelData(!del_data)
-    }
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * 15) % data.length
+    setItemOffset(newOffset)
   }
 
   return (
@@ -104,17 +90,13 @@ const EmployeList = () => {
         <thead>
           <tr>
             {Lead_Heading.map((v, index) => {
-              return (
-                <>
-                  <th key={index}>{v}</th>
-                </>
-              )
+              return <th key={index}>{v}</th>
             })}
           </tr>
         </thead>
         <tbody>
-          {records &&
-            records?.map((v, index) => (
+          {currentItems &&
+            currentItems?.map((v, index) => (
               <tr key={index} style={{ border: 'none' }}>
                 <td style={{ border: 'none' }} key={index}>
                   {' '}
@@ -164,39 +146,16 @@ const EmployeList = () => {
             ))}
         </tbody>
       </Table>
-      <nav id="nav_data">
-        <ul className="pagenation_data text-center">
-          <li
-            className="page-item "
-            onClick={() => {
-              prepage()
-            }}
-          >
-            <span href="#" className="page-link next px-2 py-1 ">
-              <i className="fa-solid fa-less-than"></i>
-            </span>
-          </li>
-          {numbers.map((n, i) => (
-            <li
-              className={`page-item  ${currentPage === n ? 'active_data ' : ''}`}
-              onClick={() => changeCPage(n)}
-              key={i}
-            >
-              <span>{n}</span>
-            </li>
-          ))}
-          <li
-            className="page-item"
-            onClick={() => {
-              nextpage()
-            }}
-          >
-            <span className="page-link px-2 py-1 next">
-              <i className="fa-solid fa-greater-than"></i>
-            </span>
-          </li>
-        </ul>
-      </nav>
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel=">>"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={5}
+        pageCount={pageCount}
+        previousLabel="<<"
+        renderOnZeroPageCount={null}
+        className="pags"
+      />
 
       <CModal
         visible={visible}

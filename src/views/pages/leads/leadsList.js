@@ -23,19 +23,26 @@ import './leads.css'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
+import { CSVLink } from 'react-csv'
+import ReactPaginate from 'react-paginate'
 
 export default function LeadsList() {
-  const [Leads, setLeade] = useState('')
+  const [Leads, setLeade] = useState([])
   const [delId, setdelId] = useState(null)
   const [visible, setVisible] = useState(false)
+  const [filtervisible, setfilterVisible] = useState(false)
   const [allEmployees, setAllEmployees] = useState([])
   const [type, settype] = useState('edit')
-  const [startDate, setStartDate] = useState(new Date())
   const [value, setValue] = useState({
     id: 0,
     status: 0,
     lead_id: 0,
     remainder_date: moment(new Date()).format('YYYY-MM-DD'),
+  })
+
+  const [dates, setdates] = useState({
+    from: moment(new Date()).format('YYYY-MM-DD'),
+    to: moment(new Date()).format('YYYY-MM-DD'),
   })
 
   const [del_data, setDelData] = useState(true)
@@ -128,48 +135,97 @@ export default function LeadsList() {
     }
   }
 
-  const [currentPage, setCurrentPage] = useState(1)
+  const filtered = Leads?.filter((lead) => {
+    const fromDate = new Date(`${dates.from}`)
+    const toDate = new Date(`${dates.to}`)
+    const remainderDate = new Date(lead.remainder_date)
+    return remainderDate >= fromDate && remainderDate <= toDate
+  })
 
-  const recordsPerPage = 3
-  const lastIndex = currentPage * recordsPerPage
+  const getDatas = filtervisible ? filtered : Leads
 
-  const firstIndex = lastIndex - recordsPerPage
-  const records = Leads?.slice(firstIndex, lastIndex)
-  const npage = Math.ceil(Leads?.length / recordsPerPage)
-  const numbers = [...Array(npage + 1).keys()].slice(1)
-  function prepage() {
-    if (currentPage !== firstIndex) {
-      setCurrentPage(currentPage - 1)
-    }
-  }
-  function changeCPage(id) {
-    setCurrentPage(id)
-  }
+  const [itemOffset, setItemOffset] = useState(0)
 
-  function nextpage() {
-    if (currentPage !== firstIndex) {
-      setCurrentPage(currentPage + 1)
-      setDelData(!del_data)
-    }
+  const endOffset = itemOffset + 15
+  const currentItems = getDatas.slice(itemOffset, endOffset)
+  const pageCount = Math.ceil(getDatas.length / 15)
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * 15) % getDatas.length
+    setItemOffset(newOffset)
   }
 
   return (
     <div>
+      <div>
+        {filtervisible ? (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div>
+              From:
+              <DatePicker
+                selected={dates.from}
+                onChange={(date) => {
+                  setdates((pre) => ({ ...pre, from: convertDate(date) }))
+                }}
+              />
+            </div>
+            &nbsp;&nbsp;&nbsp;
+            <div>
+              To:
+              <DatePicker
+                selected={dates.to}
+                onChange={(date) => {
+                  setdates((pre) => ({ ...pre, to: convertDate(date) }))
+                }}
+              />
+            </div>
+            &nbsp;&nbsp;&nbsp;
+            <div>
+              <i
+                className="fa-solid fa-close"
+                style={{ cursor: 'pointer', color: 'red' }}
+                onClick={() => setfilterVisible(false)}
+              ></i>
+            </div>
+          </div>
+        ) : (
+          <div>
+            Filter{' '}
+            <i
+              className="fa-solid fa-chevron-down"
+              style={{ cursor: 'pointer' }}
+              onClick={() => setfilterVisible(true)}
+            ></i>
+          </div>
+        )}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginBottom: 15,
+            marginTop: 15,
+            alignItems: 'center',
+          }}
+        >
+          <div></div>
+          <div className="exportCSV">
+            <CSVLink data={currentItems} filename={'Leads_List.csv'}>
+              Export CSV
+            </CSVLink>
+          </div>
+        </div>
+      </div>
       <Table responsive>
         <thead>
           <tr>
             {Lead_Heading.map((v, index) => {
-              return (
-                <>
-                  <th key={index}>{v}</th>
-                </>
-              )
+              return <th key={index}>{v}</th>
             })}
           </tr>
         </thead>
         <tbody>
-          {records &&
-            records?.map((v, index) => (
+          {currentItems &&
+            currentItems?.map((v, index) => (
               <tr key={index} style={{ border: 'none' }}>
                 <td style={{ border: 'none' }} key={index}>
                   {' '}
@@ -230,39 +286,16 @@ export default function LeadsList() {
             ))}
         </tbody>
       </Table>
-      <nav id="nav_data">
-        <ul className="pagenation_data text-center">
-          <li
-            className="page-item "
-            onClick={() => {
-              prepage()
-            }}
-          >
-            <span href="#" className="page-link next px-2 py-1 ">
-              <i className="fa-solid fa-less-than"></i>
-            </span>
-          </li>
-          {numbers.map((n, i) => (
-            <li
-              className={`page-item  ${currentPage === n ? 'active_data ' : ''}`}
-              onClick={() => changeCPage(n)}
-              key={i}
-            >
-              <span>{n}</span>
-            </li>
-          ))}
-          <li
-            className="page-item"
-            onClick={() => {
-              nextpage()
-            }}
-          >
-            <span className="page-link px-2 py-1 next">
-              <i className="fa-solid fa-greater-than"></i>
-            </span>
-          </li>
-        </ul>
-      </nav>
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel=">>"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={5}
+        pageCount={pageCount}
+        previousLabel="<<"
+        renderOnZeroPageCount={null}
+        className="pags"
+      />
 
       <CModal
         visible={visible}

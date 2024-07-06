@@ -3,6 +3,8 @@ import EmployeList from './views/pages/employees/employeList'
 import CreateEmployee from './views/pages/employees/createEmployee'
 import LeadsList from './views/pages/leads/leadsList'
 import RemindersList from './views/pages/reminders/remindersList'
+import UpdateProfile from './views/pages/profile/updateProfile'
+import AdminDetails from './views/pages/profile/adminDetails'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -100,6 +102,8 @@ const routes = [
   { path: '/employeeList', name: 'Employee List', element: EmployeList },
   { path: '/createEmployee', name: 'Employee Create', element: CreateEmployee },
   { path: '/remindersList', name: 'Reminders List', element: RemindersList },
+  { path: '/profileUpdate', name: 'Reminders List', element: UpdateProfile },
+  { path: '/profile', name: 'Reminders List', element: AdminDetails },
 ]
 
 export default routes

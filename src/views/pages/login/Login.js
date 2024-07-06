@@ -27,7 +27,7 @@ const Login = () => {
   const token = sessionStorage.getItem('token')
   useEffect(() => {
     if (token) {
-      window.location.href = '/#/dashboard'
+      window.location.href = '/dashboard'
     }
   }, [])
 
@@ -39,7 +39,7 @@ const Login = () => {
       .then((res) => {
         if (res.data.message === 'Login Successfully') {
           sessionStorage.setItem('token', res.data.access_token)
-          window.location.href = '/#/dashboard'
+          window.location.href = '/dashboard'
         } else {
           alert('Invalid credentials')
         }
@@ -55,6 +55,16 @@ const Login = () => {
         <CRow className="justify-content-center">
           <CCol md={8}>
             <CCardGroup>
+              <CCard className="text-white py-5">
+                <CCardBody
+                  className="text-center"
+                  style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                >
+                  <div>
+                    <img src={Logo} alt="logo" style={{ width: 200 }} />
+                  </div>
+                </CCardBody>
+              </CCard>
               <CCard className="p-4">
                 <CCardBody>
                   <CForm>
@@ -92,16 +102,6 @@ const Login = () => {
                       </CCol>
                     </CRow>
                   </CForm>
-                </CCardBody>
-              </CCard>
-              <CCard className="text-white py-5" style={{ width: '44%' }}>
-                <CCardBody
-                  className="text-center"
-                  style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                >
-                  <div>
-                    <img src={Logo} alt="logo" style={{ width: 200 }} />
-                  </div>
                 </CCardBody>
               </CCard>
             </CCardGroup>

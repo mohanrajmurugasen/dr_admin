@@ -5,7 +5,7 @@ const DefaultLayout = () => {
   const token = sessionStorage.getItem('token')
   useEffect(() => {
     if (!token) {
-      window.location.href = '/#/login'
+      window.location.href = '/login'
     }
   }, [])
   return (

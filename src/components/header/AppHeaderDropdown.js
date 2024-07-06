@@ -23,8 +23,10 @@ import {
 import CIcon from '@coreui/icons-react'
 
 import avatar8 from './../../assets/images/avatars/8.jpg'
+import { useNavigate } from 'react-router-dom'
 
 const AppHeaderDropdown = () => {
+  const navigate = useNavigate()
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0 pe-0" caret={false}>
@@ -63,7 +65,7 @@ const AppHeaderDropdown = () => {
           </CBadge>
         </CDropdownItem>
         <CDropdownHeader className="bg-body-secondary fw-semibold my-2">Settings</CDropdownHeader>
-        <CDropdownItem href="#">
+        <CDropdownItem href="#" onClick={() => navigate('/profile')}>
           <CIcon icon={cilUser} className="me-2" />
           Profile
         </CDropdownItem>
@@ -89,7 +91,7 @@ const AppHeaderDropdown = () => {
         <CDropdownItem
           onClick={() => {
             sessionStorage.removeItem('token')
-            window.location.href = '/#/login'
+            window.location.href = '/login'
           }}
           style={{ cursor: 'pointer' }}
         >

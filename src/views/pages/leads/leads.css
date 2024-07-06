@@ -5,3 +5,38 @@
 .react-datepicker-wrapper input {
   width: 100%;
 }
+
+.exportCSV a {
+  background-color: #ffc107;
+  color: white;
+  text-decoration: none;
+  padding: 8px;
+}
+
+.pags {
+  display: flex !important;
+  float: right !important;
+  margin-top: 15px;
+}
+
+.pags a {
+  border: 1px solid gray;
+  padding: 4px 10px;
+  color: black;
+  text-decoration: none;
+  background-color: white;
+}
+
+.pags .selected a {
+  background-color: #ffc107 !important;
+}
+
+.pags .previous a {
+  background-color: #212631 !important;
+  color: white !important;
+}
+
+.pags .next a {
+  background-color: #212631 !important;
+  color: white !important;
+}
