@@ -39,7 +39,7 @@ const AdminDetaails = () => {
         <CContainer>
           <CRow className="justify-content-center">
             <CCol md={9} lg={7} xl={6}>
-              <CCard className="mx-4">
+              <CCard className="mx-4" style={{ position: 'relative' }}>
                 <CCardBody className="p-4">
                   <CForm>
                     <h1>Admin Details</h1>
@@ -82,6 +82,18 @@ const AdminDetaails = () => {
                     </div>
                   </CForm>
                 </CCardBody>
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 10,
+                    right: 10,
+                    color: '#0d6efd',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => navigate('/passwordUpdate')}
+                >
+                  Update Password?
+                </div>
               </CCard>
             </CCol>
           </CRow>

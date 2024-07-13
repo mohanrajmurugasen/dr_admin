@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   CButton,
   CCard,
@@ -12,44 +12,24 @@ import {
   CRow,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilPhone, cilUser } from '@coreui/icons'
+import { cilLockLocked } from '@coreui/icons'
 import AuthAxios from '../../../intreceptor/authAxios'
 import { useNavigate } from 'react-router-dom'
 
-const UpdateProfile = () => {
+const UpdatePassword = () => {
   const [value, setValue] = useState({
-    id: 1,
-    name: '',
-    email: '',
-    mobile_number: '',
+    admin_id: 1,
+    current_password: '',
+    new_password: '',
+    confirm_password: '',
   })
-  const [checkList, setcheckList] = useState(false)
   const navigate = useNavigate()
-  useEffect(() => {
-    AuthAxios.get('admin-profile/1')
-      .then((res) => {
-        if (res.data?.data) {
-          setValue((pre) => ({
-            ...pre,
-            name: res.data.data.name,
-            email: res.data.data.email,
-            mobile_number: res.data.data.mobile_number,
-          }))
-        } else {
-          alert('Something went wrong!')
-        }
-      })
-      .catch((err) => {
-        alert(err.message)
-        console.error(err.message)
-      })
-  }, [checkList])
+
   const employeeCreate = () => {
-    AuthAxios.post('admin/profile-update', value)
+    AuthAxios.post('admin-change-password', value)
       .then((res) => {
-        if (res.data.message === 'Admin Details Updated successfully') {
-          alert('Admin Details Updated successfully!')
-          setcheckList(!checkList)
+        if (res.data.message === 'Password Updated Successfully') {
+          alert('Password Updated Successfully!')
           navigate('/profile')
         } else {
           alert('Internal Server Error!')
@@ -60,6 +40,7 @@ const UpdateProfile = () => {
         console.error(err.message)
       })
   }
+
   return (
     <div>
       <div className="d-flex flex-row align-items-center">
@@ -69,38 +50,44 @@ const UpdateProfile = () => {
               <CCard className="mx-4">
                 <CCardBody className="p-4">
                   <CForm>
-                    <h1>Update Admin Details</h1>
+                    <h1>Update Password</h1>
                     <br />
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
-                        <CIcon icon={cilUser} />
+                        <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
                       <CFormInput
-                        placeholder="Name"
-                        autoComplete="name"
-                        value={value.name}
-                        onChange={(e) => setValue((pre) => ({ ...pre, name: e.target.value }))}
-                      />
-                    </CInputGroup>
-                    <CInputGroup className="mb-3">
-                      <CInputGroupText>@</CInputGroupText>
-                      <CFormInput
-                        placeholder="Email"
-                        autoComplete="email"
-                        value={value.email}
-                        onChange={(e) => setValue((pre) => ({ ...pre, email: e.target.value }))}
+                        type="password"
+                        placeholder="Current password"
+                        value={value.current_password}
+                        onChange={(e) =>
+                          setValue((pre) => ({ ...pre, current_password: e.target.value }))
+                        }
                       />
                     </CInputGroup>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
-                        <CIcon icon={cilPhone} />
+                        <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
                       <CFormInput
-                        placeholder="Mobile No."
-                        autoComplete="phone"
-                        value={value.mobile_number}
+                        type="password"
+                        placeholder="New password"
+                        value={value.new_password}
                         onChange={(e) =>
-                          setValue((pre) => ({ ...pre, mobile_number: e.target.value }))
+                          setValue((pre) => ({ ...pre, new_password: e.target.value }))
+                        }
+                      />
+                    </CInputGroup>
+                    <CInputGroup className="mb-3">
+                      <CInputGroupText>
+                        <CIcon icon={cilLockLocked} />
+                      </CInputGroupText>
+                      <CFormInput
+                        type="password"
+                        placeholder="Confirm password"
+                        value={value.confirm_password}
+                        onChange={(e) =>
+                          setValue((pre) => ({ ...pre, confirm_password: e.target.value }))
                         }
                       />
                     </CInputGroup>
@@ -108,7 +95,9 @@ const UpdateProfile = () => {
                       <CButton
                         color="success"
                         disabled={
-                          value.name === '' || value.email === '' || value.mobile_number === ''
+                          value.current_password === '' ||
+                          value.new_password === '' ||
+                          value.confirm_password === ''
                         }
                         onClick={employeeCreate}
                       >
@@ -126,4 +115,4 @@ const UpdateProfile = () => {
   )
 }
 
-export default UpdateProfile
+export default UpdatePassword
